@@ -1,10 +1,11 @@
-import React from "react";
+import React,{useState,useEffect,useRef} from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import colors from "../utils/colors";
 
 export default function Form(props) {
   const { setCapital, setInterest, setMonths } = props;
+  
   return (
     <View style={styles.viewForm}>
       <View style={styles.viewInputs}>
@@ -26,12 +27,15 @@ export default function Form(props) {
         style={picketSelectStyles}
         onValueChange={(value) => setMonths(value)}
       >
+        <Picker.Item label="Selecciona el Plazo..." value="null" />
         <Picker.Item label="3 Meses" value="3" />
         <Picker.Item label="6 Meses" value="6" />
         <Picker.Item label="12 Meses" value="12" />
         <Picker.Item label="24 Meses" value="24" />
       </Picker>
+      
     </View>
+    
   );
 }
 

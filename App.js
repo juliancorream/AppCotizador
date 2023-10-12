@@ -1,26 +1,40 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  StatusBar,
-  Button,
-} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
 import Form from "./src/components/Form";
-import colors from "./src/utils/colors";
 import Footer from "./src/components/Footer";
+import ResultCalculation from "./src/components/ResultCalculation";
+import colors from "./src/utils/colors";
 
 export default function App() {
   const [capital, setCapital] = useState(null);
   const [interest, setInterest] = useState(null);
   const [months, setMonths] = useState(null);
+  const [total, setTotal] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const onSubmit = () => {
-    console.log("capital ->", capital);
-    console.log("interest ->", interest);
-    console.log("months ->", months);
+  const calculate = () => {
+    reset();
+    if (!capital) {
+      setErrorMessage("Añade la Cantidad que quieres Solicitar");
+    } else if (!interest) {
+      setErrorMessage("Añade el Interes del Prestamo");
+    } else if (!months) {
+      setErrorMessage("Selecciona los meses a Pagar");
+    } else {
+      const i = interest / 100;
+      const fee = capital / ((1 - Math.pow(i + 1, -months)) / i);
+      setTotal({
+        monthlyFee: fee.toFixed(2).replace(".", ","),
+        totalPayable: (fee * months).toFixed(2).replace(".", ","),
+      });
+    }
   };
+
+  const reset = () => {
+    setErrorMessage("");
+    setTotal(null);
+  };
+
   return (
     <>
       <StatusBar barStyle={"light-content"} />
@@ -33,12 +47,8 @@ export default function App() {
           setMonths={setMonths}
         />
       </SafeAreaView>
-
-      <View>
-        <Text>Resultado</Text>
-      </View>
-
-    <Footer/>
+      <ResultCalculation errorMessage={errorMessage} />
+      <Footer calculate={calculate} />
     </>
   );
 }
@@ -46,7 +56,6 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     height: 290,
-
     alignItems: "center",
   },
   background: {
